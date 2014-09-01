@@ -1,0 +1,464 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+    title From ES5 to ES7
+
+    link(rel='stylesheet', type='text/css', href='build/build.css')
+
+  body
+
+    article
+
+      section
+        h1 From ES5 to ES7
+        p
+          a(href='https://twitter.com/codazzo')@codazzo
+      section.full-imgs
+        h3 Ecmascript: what is it?
+        img(src='images/ecmascript.png')
+      section
+        h3 Ecmascript versions
+        ul
+          li 1999: ES 3
+          li ...
+          li 2008: ES 4 ... abandoned
+          li 2009: ES 3.1
+      section.icanhaz-background
+        h1 ES 5
+        p You can haz it.
+      section
+        h3 JSON
+        ul
+          li
+            pre
+              code.language-javascript.
+                var email = {
+                  from: 'foo@bar.com',
+                  subject: 'Check my ecmascripts'
+                };
+          li
+            img(src='images/stringify.png')
+          li
+            img(src='images/stringify-4.png')
+      section
+        h3 Strict mode
+        ul
+          li
+            pre
+              code.language-javascript.
+                'use strict';
+                amoutn = 100; //throws
+          li TL;DR <span class="code">'use strict';</span>
+      section
+        h3 Array.prototype
+        pre
+          code.language-javascript.
+            allEnabled = users.every(function(user){
+              return !!user.isEnabled;
+            });
+      section
+        h3 Function.prototype.bind()
+        ul
+          li Binds a scope
+          li
+            pre
+              code.language-javascript.
+                var render = this.render.bind(this);
+                render();
+          li Binds arguments too (in order)
+            pre
+              code.language-javascript.
+                var sendMsg = sendEmail.bind(null, 'Welcome!');
+                users.forEach(sendWelcomeMsg);
+          li This is <strong>great</strong> for promises
+          li More on that later, promise()
+      section
+        h3 Object.defineProperty
+        pre
+          code.language-javascript.
+            //redis_instance.js
+            var instance = null;
+
+            Object.defineProperty(export, 'client', {
+                get: function redisInstance() {
+                    return instance || (instance = create());
+                }
+            });
+
+            //redis_test.js
+            var instance = require('./redis_instance');
+            instance.client.ping(); //lazily initialized
+      section
+        img(src='images/wait-theresmore.jpg')
+      section
+        h3 Object.defineProperty 2/2
+        ul
+          li
+            img(src='images/uncaughterror-options-dashboard.png')
+          li The dashboard is correctly set in the constructor..
+          li
+            pre
+              code.language-javascript.
+                Object.defineProperty(this, 'dashboard', {
+                    value: options.dashboard
+                });
+
+                // somewhere else
+                this.dashboard = null; //this will error
+          li
+            img(src='images/chrome-devtools.png')
+      section
+        h3 Moar goodness
+        ul
+          li Object.freeze()
+          li Object.keys()
+          li Date.now()
+          li You can use all of the ES5 all of the time
+          li kinda 
+            a(href='http://kangax.github.io/compat-table/es5/') http://kangax.github.io/compat-table/es5/
+      section.soon-enough-background
+        h1 ES6
+        p You will haz it soon enough.
+      section
+        h3 Promises
+        ul
+          li
+          li Deserve their own presentation
+          li
+            pre
+              code.language-javascript.
+                fetchData()
+                  .then(renderReport)
+                  .then(generatePDF)
+                  .then(sendEmail)
+                  .catch(reschedule)
+          li ^ this is nice
+      section
+        h3 Promises 2/2
+        ul
+          li Q, Bluebird, RSVP
+          li
+            pre.smaller-code
+              code.language-javascript.
+                //parallel calls
+                Q.all(fetchUsers, fetchQueries).spread(function(users, queries) {
+                  //...
+                })
+          li Kind of like async but *reads better*
+          li Catch: <span class="code">setTimeout</span> necessary
+          li Solution: long stacks
+          li
+            img(src="images/stack-async.png")
+      section
+        h3 Classes
+        ul
+          li
+            img(src='images/javascript-classes.png')
+      section
+        h3 Classes
+        ul
+          li
+            pre
+              code.language-javascript.
+                class TwitterAuthorView extends AuthorView {
+                  render() {
+                    super();
+                    this.$el.append(renderTwitterLinks());
+                  }
+                }
+          li JUST LIKE JAVA
+      section
+        h3 Modules
+        ul
+          li
+            pre
+              code.language-javascript.
+                // CollectionView.js
+                export default function CollectionView(options = {}) {
+                  this.collection = options.collection;
+                };
+
+                // app.js
+                import CollectionView from 'CollectionView'
+
+                var myView = new CollectionView();
+          li Different strategies to resolve dependencies can be registered
+          li Still not widely implemented
+          li Don't hold your breath
+      section
+        h3 Sets
+        ul
+          li Collections with no repeated values
+          pre
+            code.language-javascript.
+              var set = new Set();
+              set.add(1);
+              set.add(jobOne);
+              set.add(set);
+          li There you go just solved Russel's paradox for ya
+          li THANKS JAVASCRIPT
+      section
+        h3 Maps
+        ul
+          li
+            pre
+              code.language-javascript.
+                var map = new Map();
+                map.set('name', 'Antonio');
+          li Any value can be used as key
+          li
+            pre
+              code.language-javascript.
+                map.set(reportOne, schedule);
+                map.set(reportTwo, schedule);
+      section
+        h3 Iterators
+        ul
+          li Maps, Sets are Iterables
+          li UNLEASH THE FOR-OF
+            pre
+              code.language-javascript.
+                for (let [report, schedule] of map) {
+                  console.log(
+                    'report %s was generated by schedule %s',
+                    report.id, schedule.id
+                  );
+                }
+          li
+            img(src='images/borat-very-nice.png', width=150)
+      section
+        h3 Generators
+        pre
+          code.language-javascript.
+            function* count(){
+              var i = 0;
+              while(true){
+                yield i++;  
+              }
+            }
+
+            var counter = count();
+            counter.next(); //{ value: 0, done: false }
+            counter.next(); //{ value: 1, done: false }
+      section
+        h3 Okay more about Generators
+        ul
+          li They're iterable
+          li
+            pre.smaller-code
+              code.language-javascript.
+                function* countTo(count){
+                  var i = 0;
+                  while(true){
+                    yield i++;
+                    if (i===count) { return i};
+                  }
+                }
+                countToTen = countTo(10);
+
+                for (num of countToTen) {
+                  console.log(num);
+                }
+          li *magic*
+          li Thorough discussion in 
+            a(href='http://pag.forbeslindesay.co.uk/') http://pag.forbeslindesay.co.uk/
+      section
+        h3 Proxies
+        ul
+          li
+            pre.smaller-code
+              code.language-javascript.
+                var user = {name: 'Herp'};
+                library.add(user.books);  // undefined
+          li ... you've seen this before
+          li
+            pre.smaller-code
+              code.language-javascript.
+                var p = new Proxy(user, {
+                  get: function(target, prop) {
+                    if (!(prop in target)) {
+                       throw new Error('you dont know what youre doing');
+                     }
+                    return target[prop];
+                  }
+                });
+                console.log(p.name) // 'herp'
+                console.log(p.book) // throws
+      section
+          h3 Moar Proxies
+          ul
+            li You can override the complete behaviour of any Object
+            li Kind of like meta-programming in Ruby
+            li ... so don't go overboard kthx
+      section.sugar-background
+        h2 Sugar
+      section
+        h3 Arrow functions
+        ul
+          li
+            pre
+              code.language-javascript.
+                usernames = users.map((user) => {
+                  return user.name;
+                });
+          li Single expressions require no braces
+          li The expression is also the implicit return value
+          li
+            pre
+              code.language-javascript.
+                allEnabled = users.every(user => user.isEnabled);
+      section
+        h3 Default function parameters
+        ul
+          li
+            pre.smaller-code
+              code.language-javascript.
+                constructor: function User(options) {
+                  this.name = options.name;
+                }
+          li
+            img(src='images/cant-read-property-of-undefined.png')
+          li
+            pre options = options || {}; // ◔_◔
+          li
+            pre.smaller-code
+              code.language-javascript.
+                constructor: function User(options = {}) {
+                  this.name = options.name;
+                }
+      section
+        h3 Rest parameters
+        ul
+          li
+            pre
+              code.language-javascript.
+                function sum(first, second, ...rest) {
+                  console.log(rest);
+                }
+                sum(1, 2, 3, 4, 5); //prints [3, 4, 5]
+          li they are actual arrays!
+          li
+            pre
+              code.language-javascript.
+                function prettyPrint(...rest) {
+                  var res = rest.sort().join('-');
+                  console.log(res);
+                }
+                prettyPrint(3,4,6,1,7,2); // prints '1-2-3-4-6-7'
+      section
+        h3 Spread
+        pre
+          code.language-javascript.
+            var head = [1, 2];
+            var mid = [3, 4];
+            var tail = [5, 6];
+
+            res = [...head, ...mid, ...tail];
+            console.log(res); //prints [1, 2, 3, 4, 5, 6]
+
+      section
+        h3 Destructuring
+        ul
+          li
+            pre
+              code.language-javascript.
+                var [nameA, nameB] = [userA, userB].map(function (user) {
+                  return user.name;
+                });
+          li That could have used arrow notation
+      section
+        h3 Moar goodness
+        ul
+          li typed arrays
+            pre String.prototype.startsWith
+            pre String.prototype.endsWith
+            pre String.prototype.contains
+            pre Array.prototype.find
+            pre Array.prototype.findIndex
+
+      section
+        h1 ES7
+        ul
+          li
+          li Look forward to self-driving cars first
+          //li Those are coming soon though so..
+          li
+            img(src='images/google-self-driving-car.jpg')
+      section
+        h3 Array comprehensions
+        ul
+          li Let's comprehend them
+          li
+            pre
+              code.language-javascript.
+                var numbers = [1, 2, 3];
+
+                numbers.map(i => i * i); //[1, 4, 9]
+                [for (i of numbers) i*i ]; 
+          li You can nest <span class="code">if</span>'s and <span class="code">for ... of</span>'s
+          li
+            pre
+              code.language-javascript.
+                [for (i of numbers) if (i%2) i *i]; //[1, 9]
+          li JUST LIKE RUBY
+      section
+        h3 Exponentiation operator
+        ul
+          li
+            pre
+              code.language-javascript.
+                2 ** 3 === 8 //true
+          li
+            img(src="images/mind-blown.gif")
+          li THANKS OBAMA
+      section
+        h3 Object.observe
+        ul
+          li
+            pre.smaller-code
+              code.language-javascript.
+                var user = {name: 'Derp', id: 1 }
+                function observer(changes){
+                  changes.forEach(function(change, i){
+                      console.log('property changed: ' + change.name);
+                      console.log('change type ' + change.type);
+                      console.log('current value ' + change.object[change.name]);
+                  });
+                }
+                Object.observe(user, observer)
+          li
+            pre.smaller-code
+              code.language-javascript.
+                user.id = 2;
+      section
+        h3 Object.observe 2/2
+        ul
+          li
+            img(src='images/horsejs-observe.png')
+      section
+        h3 Wrapping up
+        ul
+          li
+          li Please use ES5
+          li Firefox Aurora === fun times
+          li @esdiscuss
+      section
+        h1 THANKS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    script(src='build/build.js')

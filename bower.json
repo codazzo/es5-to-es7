@@ -1,0 +1,7 @@
+{
+  "name": "es5-to-es7",
+  "version": "0.0.0",
+  "dependencies": {
+    "prism": "gh-pages"
+  }
+}
