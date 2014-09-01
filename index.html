@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>From ES5 to ES7</title>
+    <link rel="stylesheet" type="text/css" href="build/build.css">
+  </head>
+  <body>
+    <article>
+      <section>
+        <h1>From ES5 to ES7</h1>
+        <p><a href="https://twitter.com/codazzo">@codazzo</a></p>
+      </section>
+      <section class="full-imgs">
+        <h3>Ecmascript: what is it?</h3><img src="images/ecmascript.png">
+      </section>
+      <section>
+        <h3>Ecmascript versions</h3>
+        <ul>
+          <li>1999: ES 3</li>
+          <li>...</li>
+          <li>2008: ES 4 ... abandoned</li>
+          <li>2009: ES 3.1</li>
+        </ul>
+      </section>
+      <section class="icanhaz-background">
+        <h1>ES 5</h1>
+        <p>You can haz it.</p>
+      </section>
+      <section>
+        <h3>JSON</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">var email = {
+  from: 'foo@bar.com',
+  subject: 'Check my ecmascripts'
+};</code></pre>
+          </li>
+          <li><img src="images/stringify.png"></li>
+          <li><img src="images/stringify-4.png"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Strict mode</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">'use strict';
+amoutn = 100; //throws</code></pre>
+          </li>
+          <li>TL;DR <span class="code">'use strict';</span></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Array.prototype</h3>
+        <pre><code class="language-javascript">allEnabled = users.every(function(user){
+  return !!user.isEnabled;
+});</code></pre>
+      </section>
+      <section>
+        <h3>Function.prototype.bind()</h3>
+        <ul>
+          <li>Binds a scope</li>
+          <li>
+            <pre><code class="language-javascript">var render = this.render.bind(this);
+render();</code></pre>
+          </li>
+          <li>Binds arguments too (in order)
+            <pre><code class="language-javascript">var sendMsg = sendEmail.bind(null, 'Welcome!');
+users.forEach(sendWelcomeMsg);</code></pre>
+          </li>
+          <li>This is <strong>great</strong> for promises</li>
+          <li>More on that later, promise()</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Object.defineProperty</h3>
+        <pre><code class="language-javascript">//redis_instance.js
+var instance = null;
+
+Object.defineProperty(export, 'client', {
+    get: function redisInstance() {
+        return instance || (instance = create());
+    }
+});
+
+//redis_test.js
+var instance = require('./redis_instance');
+instance.client.ping(); //lazily initialized</code></pre>
+      </section>
+      <section><img src="images/wait-theresmore.jpg"></section>
+      <section>
+        <h3>Object.defineProperty 2/2</h3>
+        <ul>
+          <li><img src="images/uncaughterror-options-dashboard.png"></li>
+          <li>The dashboard is correctly set in the constructor..</li>
+          <li>
+            <pre><code class="language-javascript">Object.defineProperty(this, 'dashboard', {
+    value: options.dashboard
+});
+
+// somewhere else
+this.dashboard = null; //this will error</code></pre>
+          </li>
+          <li><img src="images/chrome-devtools.png"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Moar goodness</h3>
+        <ul>
+          <li>Object.freeze()</li>
+          <li>Object.keys()</li>
+          <li>Date.now()</li>
+          <li>You can use all of the ES5 all of the time</li>
+          <li>kinda <a href="http://kangax.github.io/compat-table/es5/">http://kangax.github.io/compat-table/es5/</a></li>
+        </ul>
+      </section>
+      <section class="soon-enough-background">
+        <h1>ES6</h1>
+        <p>You will haz it soon enough.</p>
+      </section>
+      <section>
+        <h3>Promises</h3>
+        <ul>
+          <li></li>
+          <li>Deserve their own presentation</li>
+          <li>
+            <pre><code class="language-javascript">fetchData()
+  .then(renderReport)
+  .then(generatePDF)
+  .then(sendEmail)
+  .catch(reschedule)</code></pre>
+          </li>
+          <li>^ this is nice</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Promises 2/2</h3>
+        <ul>
+          <li>Q, Bluebird, RSVP</li>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">//parallel calls
+Q.all(fetchUsers, fetchQueries).spread(function(users, queries) {
+  //...
+})</code></pre>
+          </li>
+          <li>Kind of like async but *reads better*</li>
+          <li>Catch: <span class="code">setTimeout</span> necessary</li>
+          <li>Solution: long stacks</li>
+          <li><img src="images/stack-async.png"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Classes</h3>
+        <ul>
+          <li><img src="images/javascript-classes.png"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Classes</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">class TwitterAuthorView extends AuthorView {
+  render() {
+    super();
+    this.$el.append(renderTwitterLinks());
+  }
+}</code></pre>
+          </li>
+          <li>JUST LIKE JAVA</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Modules</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">// CollectionView.js
+export default function CollectionView(options = {}) {
+  this.collection = options.collection;
+};
+
+// app.js
+import CollectionView from 'CollectionView'
+
+var myView = new CollectionView();</code></pre>
+          </li>
+          <li>Different strategies to resolve dependencies can be registered</li>
+          <li>Still not widely implemented</li>
+          <li>Don't hold your breath</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Sets</h3>
+        <ul>
+          <li>Collections with no repeated values</li>
+          <pre><code class="language-javascript">var set = new Set();
+set.add(1);
+set.add(jobOne);
+set.add(set);</code></pre>
+          <li>There you go just solved Russel's paradox for ya</li>
+          <li>THANKS JAVASCRIPT</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Maps</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">var map = new Map();
+map.set('name', 'Antonio');</code></pre>
+          </li>
+          <li>Any value can be used as key</li>
+          <li>
+            <pre><code class="language-javascript">map.set(reportOne, schedule);
+map.set(reportTwo, schedule);</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Iterators</h3>
+        <ul>
+          <li>Maps, Sets are Iterables</li>
+          <li>UNLEASH THE FOR-OF
+            <pre><code class="language-javascript">for (let [report, schedule] of map) {
+  console.log(
+    'report %s was generated by schedule %s',
+    report.id, schedule.id
+  );
+}</code></pre>
+          </li>
+          <li><img src="images/borat-very-nice.png" width="150"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Generators</h3>
+        <pre><code class="language-javascript">function* count(){
+  var i = 0;
+  while(true){
+    yield i++;  
+  }
+}
+
+var counter = count();
+counter.next(); //{ value: 0, done: false }
+counter.next(); //{ value: 1, done: false }</code></pre>
+      </section>
+      <section>
+        <h3>Okay more about Generators</h3>
+        <ul>
+          <li>They're iterable</li>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">function* countTo(count){
+  var i = 0;
+  while(true){
+    yield i++;
+    if (i===count) { return i};
+  }
+}
+countToTen = countTo(10);
+
+for (num of countToTen) {
+  console.log(num);
+}</code></pre>
+          </li>
+          <li>*magic*</li>
+          <li>Thorough discussion in <a href="http://pag.forbeslindesay.co.uk/">http://pag.forbeslindesay.co.uk/</a></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Proxies</h3>
+        <ul>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">var user = {name: 'Herp'};
+library.add(user.books);  // undefined</code></pre>
+          </li>
+          <li>... you've seen this before</li>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">var p = new Proxy(user, {
+  get: function(target, prop) {
+    if (!(prop in target)) {
+       throw new Error('you dont know what youre doing');
+    }
+    return target[prop];
+  }
+});
+console.log(p.name) // 'herp'
+console.log(p.book) // throws</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Moar Proxies</h3>
+        <ul>
+          <li>You can override the complete behaviour of any Object</li>
+          <li>Kind of like meta-programming in Ruby</li>
+          <li>... so don't go overboard kthx</li>
+        </ul>
+      </section>
+      <section class="sugar-background">
+        <h2>Sugar</h2>
+      </section>
+      <section>
+        <h3>Arrow functions</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">usernames = users.map((user) => {
+  return user.name;
+});</code></pre>
+          </li>
+          <li>Single expressions require no braces</li>
+          <li>The expression is also the implicit return value</li>
+          <li>
+            <pre><code class="language-javascript">allEnabled = users.every(user => user.isEnabled);</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Default function parameters</h3>
+        <ul>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">constructor: function User(options) {
+  this.name = options.name;
+}</code></pre>
+          </li>
+          <li><img src="images/cant-read-property-of-undefined.png"></li>
+          <li>
+            <pre>options = options || {}; // ◔_◔</pre>
+          </li>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">constructor: function User(options = {}) {
+  this.name = options.name;
+}</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Rest parameters</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">function sum(first, second, ...rest) {
+  console.log(rest);
+}
+sum(1, 2, 3, 4, 5); //prints [3, 4, 5]</code></pre>
+          </li>
+          <li>they are actual arrays!</li>
+          <li>
+            <pre><code class="language-javascript">function prettyPrint(...rest) {
+  var res = rest.sort().join('-');
+  console.log(res);
+}
+prettyPrint(3,4,6,1,7,2); // prints '1-2-3-4-6-7'</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Spread</h3>
+        <pre><code class="language-javascript">var head = [1, 2];
+var mid = [3, 4];
+var tail = [5, 6];
+
+res = [...head, ...mid, ...tail];
+console.log(res); //prints [1, 2, 3, 4, 5, 6]
+</code></pre>
+      </section>
+      <section>
+        <h3>Destructuring</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">var [nameA, nameB] = [userA, userB].map(function (user) {
+  return user.name;
+});</code></pre>
+          </li>
+          <li>That could have used arrow notation</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Moar goodness</h3>
+        <ul>
+          <li>typed arrays
+            <pre>String.prototype.startsWith</pre>
+            <pre>String.prototype.endsWith</pre>
+            <pre>String.prototype.contains</pre>
+            <pre>Array.prototype.find</pre>
+            <pre>Array.prototype.findIndex</pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h1>ES7</h1>
+        <ul>
+          <li></li>
+          <li>Look forward to self-driving cars first</li>
+          <!--li Those are coming soon though so..-->
+          <li><img src="images/google-self-driving-car.jpg"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Array comprehensions</h3>
+        <ul>
+          <li>Let's comprehend them</li>
+          <li>
+            <pre><code class="language-javascript">var numbers = [1, 2, 3];
+
+numbers.map(i => i * i); //[1, 4, 9]
+[for (i of numbers) i*i ]; </code></pre>
+          </li>
+          <li>You can nest <span class="code">if</span>'s and <span class="code">for ... of</span>'s</li>
+          <li>
+            <pre><code class="language-javascript">[for (i of numbers) if (i%2) i *i]; //[1, 9]</code></pre>
+          </li>
+          <li>JUST LIKE RUBY</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Exponentiation operator</h3>
+        <ul>
+          <li>
+            <pre><code class="language-javascript">2 ** 3 === 8 //true</code></pre>
+          </li>
+          <li><img src="images/mind-blown.gif"></li>
+          <li>THANKS OBAMA</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Object.observe</h3>
+        <ul>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">var user = {name: 'Derp', id: 1 }
+function observer(changes){
+  changes.forEach(function(change, i){
+      console.log('property changed: ' + change.name);
+      console.log('change type ' + change.type);
+      console.log('current value ' + change.object[change.name]);
+  });
+}
+Object.observe(user, observer)</code></pre>
+          </li>
+          <li>
+            <pre class="smaller-code"><code class="language-javascript">user.id = 2;</code></pre>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>Object.observe 2/2</h3>
+        <ul>
+          <li><img src="images/horsejs-observe.png"></li>
+        </ul>
+      </section>
+      <section>
+        <h3>Wrapping up</h3>
+        <ul>
+          <li></li>
+          <li>Please use ES5</li>
+          <li>Firefox Aurora === fun times</li>
+          <li>@esdiscuss</li>
+        </ul>
+      </section>
+      <section>
+        <h1>THANKS</h1>
+      </section>
+    </article>
+    <script src="build/build.js"></script>
+  </body>
+</html>
